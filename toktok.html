@@ -58,7 +58,9 @@
     </main>
   </body>
   <script>
+  function loadPrTables() {
     var repoSection = document.querySelector('main');
+    var newRepoSection = document.createElement('main');
     var requestHeaders = new Headers();
     var requestInit = {
       method: 'GET',
@@ -79,14 +81,11 @@
     fetch('https://git-critique.herokuapp.com/hello/pulls', requestInit)
     .then(function(response) { return response.json(); })
     .then(function(json) {
-      var loadingText = repoSection.querySelector(".loading");
-      loadingText.parentNode.removeChild(loadingText);
-
       for (var i = 0; i < json.length; i++) {
         if (json[i].length > 0) {
           var repoTitle = document.createElement('h2');
           repoTitle.innerHTML = json[i][0].prRepoName;
-          repoSection.appendChild(repoTitle);
+          newRepoSection.appendChild(repoTitle);
 
           var prTable = document.createElement('table');
           prTable.className = "pr-table"
@@ -120,9 +119,13 @@
               "<td>" + json[i][j].prReviewers.join(", ") + "</td>";
             prTable.appendChild(listItem);
           }
-          repoSection.appendChild(prTable);
+          newRepoSection.appendChild(prTable);
         }
       }
+      repoSection.replaceWith(newRepoSection);
     });
+  }
+
+  loadPrTables();
   </script>
 </html>
